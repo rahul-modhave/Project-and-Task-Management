@@ -7,6 +7,7 @@ import rateLimit from 'express-rate-limit';
 import { config } from './config';
 import authRoutes from './modules/auth/route/auth.route';
 import taskRoutes from './modules/task/route/task.route';
+import projectRoutes from './modules/project/route/project.route';
 import healthRoutes from './modules/health/route/health.route';
 import userRoutes from './modules/user/route/user.route';
 import { errorMiddleware } from './middleware/error.middleware';
@@ -56,6 +57,7 @@ app.use('/api/', limiter);
 
 // Mount API Routes
 app.use(`${config.app.apiPrefix}/auth`, authRoutes);
+app.use(`${config.app.apiPrefix}/projects`, projectRoutes);
 app.use(`${config.app.apiPrefix}/tasks`, taskRoutes);
 app.use(`${config.app.apiPrefix}/health`, healthRoutes);
 app.use(`${config.app.apiPrefix}/users`, userRoutes);

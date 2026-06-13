@@ -16,14 +16,20 @@ import { ISessionRepository } from '../modules/auth/interface/session.repository
 import { SessionRepository } from '../modules/auth/repository/session.repository';
 import { ITaskRepository } from '../modules/task/interface/task.repository.interface';
 import { TaskRepository } from '../modules/task/repository/task.repository';
+import { IProjectRepository } from '../modules/project/interface/project.repository.interface';
+import { ProjectRepository } from '../modules/project/repository/project.repository';
+import { IProjectMemberRepository } from '../modules/project/interface/project-member.repository.interface';
+import { ProjectMemberRepository } from '../modules/project/repository/project-member.repository';
 
 // Import Business Logic Services
 import { IAuthService, AuthService } from '../modules/auth/service/auth.service';
 import { ITaskService, TaskService } from '../modules/task/service/task.service';
+import { IProjectService, ProjectService } from '../modules/project/service/project.service';
 
 // Import Controllers
 import { AuthController } from '../modules/auth/controller/auth.controller';
 import { TaskController } from '../modules/task/controller/task.controller';
+import { ProjectController } from '../modules/project/controller/project.controller';
 
 // Import Health Module
 import { IHealthService, HealthService } from '../modules/health/service/health.service';
@@ -46,6 +52,8 @@ container.bind<ISocketService>(TYPES.SocketService).to(SocketService).inSingleto
 
 // Bind Repositories
 container.bind<IUserRepository>(TYPES.UserRepository).to(UserRepository);
+container.bind<IProjectRepository>(TYPES.ProjectRepository).to(ProjectRepository);
+container.bind<IProjectMemberRepository>(TYPES.ProjectMemberRepository).to(ProjectMemberRepository);
 container.bind<ISessionRepository>(TYPES.SessionRepository).to(SessionRepository);
 container.bind<ITaskRepository>(TYPES.TaskRepository).to(TaskRepository);
 container.bind<IUserEntityRepository>(TYPES.UserEntityRepository).to(UserEntityRepository);
@@ -53,11 +61,13 @@ container.bind<IUserEntityRepository>(TYPES.UserEntityRepository).to(UserEntityR
 // Bind Business Services
 container.bind<IAuthService>(TYPES.AuthService).to(AuthService);
 container.bind<ITaskService>(TYPES.TaskService).to(TaskService);
+container.bind<IProjectService>(TYPES.ProjectService).to(ProjectService);
 container.bind<IUserService>(TYPES.UserService).to(UserService);
 
 // Bind Controllers
 container.bind<AuthController>(TYPES.AuthController).to(AuthController);
 container.bind<TaskController>(TYPES.TaskController).to(TaskController);
+container.bind<ProjectController>(TYPES.ProjectController).to(ProjectController);
 container.bind<UserController>(TYPES.UserController).to(UserController);
 
 // Bind Health Module

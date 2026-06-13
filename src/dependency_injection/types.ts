@@ -13,16 +13,20 @@ export const TYPES = {
   UserRepository: Symbol.for('UserRepository'),
   SessionRepository: Symbol.for('SessionRepository'),
   TaskRepository: Symbol.for('TaskRepository'),
+  ProjectRepository: Symbol.for('ProjectRepository'),
+  ProjectMemberRepository: Symbol.for('ProjectMemberRepository'),
   UserEntityRepository: Symbol.for('UserEntityRepository'),
 
   // Business Services
   AuthService: Symbol.for('AuthService'),
   TaskService: Symbol.for('TaskService'),
+  ProjectService: Symbol.for('ProjectService'),
   UserService: Symbol.for('UserService'),
 
   // Controllers
   AuthController: Symbol.for('AuthController'),
   TaskController: Symbol.for('TaskController'),
+  ProjectController: Symbol.for('ProjectController'),
   UserController: Symbol.for('UserController'),
 
   // Health
