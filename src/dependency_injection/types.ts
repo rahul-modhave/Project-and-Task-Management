@@ -21,12 +21,14 @@ export const TYPES = {
   AuthService: Symbol.for('AuthService'),
   TaskService: Symbol.for('TaskService'),
   ProjectService: Symbol.for('ProjectService'),
+  DashboardService: Symbol.for('DashboardService'),
   UserService: Symbol.for('UserService'),
 
   // Controllers
   AuthController: Symbol.for('AuthController'),
   TaskController: Symbol.for('TaskController'),
   ProjectController: Symbol.for('ProjectController'),
+  DashboardController: Symbol.for('DashboardController'),
   UserController: Symbol.for('UserController'),
 
   // Health

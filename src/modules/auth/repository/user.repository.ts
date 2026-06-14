@@ -12,4 +12,8 @@ export class UserRepository extends BaseRepository<UserDocument> implements IUse
   async findByEmail(email: string): Promise<UserDocument | null> {
     return await this.findOne({ email: email.toLowerCase() });
   }
+
+  async findByIds(ids: string[]): Promise<UserDocument[]> {
+    return await this.findAll({ _id: { $in: ids }, deletedAt: null });
+  }
 }

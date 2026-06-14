@@ -3,4 +3,5 @@ import { UserDocument } from '../entity/user.entity';
 
 export interface IUserRepository extends IBaseRepository<UserDocument> {
   findByEmail(email: string): Promise<UserDocument | null>;
+  findByIds(ids: string[]): Promise<UserDocument[]>;
 }

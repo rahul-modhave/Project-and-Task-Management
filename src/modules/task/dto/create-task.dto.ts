@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsOptional, IsString, IsEnum, IsNumber, IsUUID, IsDateString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, IsEnum, IsNumber, IsDateString, IsObject } from 'class-validator';
 import { TaskType, TaskPriority } from '../entity/task.entity';
 
 export class CreateTaskDto {
@@ -10,13 +10,12 @@ export class CreateTaskDto {
   @IsOptional()
   description?: string;
 
-  @IsUUID()
+  @IsString()
   @IsNotEmpty({ message: 'Project ID is required' })
   projectId: string;
 
-  @IsEnum(TaskType)
-  @IsOptional()
-  taskType?: TaskType;
+  @IsEnum(TaskType, { message: 'Invalid task type' })
+  taskType: TaskType;
 
   @IsString()
   @IsNotEmpty({ message: 'Status ID is required' })
@@ -26,9 +25,13 @@ export class CreateTaskDto {
   @IsOptional()
   priority?: TaskPriority;
 
-  @IsUUID()
+  @IsString()
+  @IsNotEmpty({ message: 'Assignee ID is required' })
+  assigneeId: string;
+
+  @IsString()
   @IsOptional()
-  assigneeId?: string;
+  parentTaskId?: string;
 
   @IsNumber()
   @IsOptional()
@@ -41,4 +44,8 @@ export class CreateTaskDto {
   @IsDateString()
   @IsOptional()
   dueDate?: string;
+
+  @IsObject()
+  @IsOptional()
+  metadata?: Record<string, unknown>;
 }

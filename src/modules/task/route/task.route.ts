@@ -5,6 +5,7 @@ import { TaskController } from '../controller/task.controller';
 import { validationMiddleware } from '../../../middleware/validation.middleware';
 import { authMiddleware } from '../../../middleware/auth.middleware';
 import { CreateTaskDto } from '../dto/create-task.dto';
+import { GetTasksFilterDto } from '../dto/get-tasks-filter.dto';
 
 const router = Router();
 
@@ -14,6 +15,18 @@ const getController = (): TaskController => {
 
 router.post('/', authMiddleware, validationMiddleware(CreateTaskDto), (req, res, next) => {
   getController().createTask(req, res, next);
+});
+
+router.post('/getTasks', authMiddleware, validationMiddleware(GetTasksFilterDto), (req, res, next) => {
+  getController().getTasksFiltered(req, res, next);
+});
+
+router.get('/getTasks', authMiddleware, (req, res, next) => {
+  getController().getAllTasks(req, res, next);
+});
+
+router.get('/', authMiddleware, (req, res, next) => {
+  getController().getAllTasks(req, res, next);
 });
 
 router.get('/project/:projectId', authMiddleware, (req, res, next) => {

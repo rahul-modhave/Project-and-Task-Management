@@ -4,6 +4,7 @@ import { BaseController } from '../../../controllers/common/base.controller';
 import { TYPES } from '../../../dependency_injection/types';
 import { ITaskService } from '../service/task.service';
 import { CreateTaskDto } from '../dto/create-task.dto';
+import { GetTasksFilterDto } from '../dto/get-tasks-filter.dto';
 import { AppError } from '../../../common/errors/app-error';
 
 @injectable()
@@ -23,8 +24,22 @@ export class TaskController extends BaseController {
 
       const dto = req.body as CreateTaskDto;
       const task = await this.taskService.createTask(dto, user.id);
-      
+
       this.sendCreated(res, task, 'Task created successfully');
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  public getAllTasks = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const user = (req as any).user;
+      if (!user) {
+        throw AppError.unauthorized('User not authenticated');
+      }
+
+      const tasks = await this.taskService.getAllTasks(user.id);
+      this.sendSuccess(res, tasks, 'Tasks for manager projects retrieved successfully');
     } catch (err) {
       next(err);
     }
@@ -61,4 +76,15 @@ export class TaskController extends BaseController {
       next(err);
     }
   };
+
+  public getTasksFiltered = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const filters = req.body as GetTasksFilterDto;
+      const tasks = await this.taskService.getTasksWithFilters(filters);
+      this.sendSuccess(res, tasks, 'Tasks retrieved successfully with filters');
+    } catch (err) {
+      next(err);
+    }
+  };
 }
+

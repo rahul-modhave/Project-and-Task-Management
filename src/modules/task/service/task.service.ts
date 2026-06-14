@@ -4,46 +4,70 @@ import { ITaskRepository } from '../interface/task.repository.interface';
 import { ISocketService } from '../../../services/common/socket.service';
 import { ILoggerService } from '../../../services/common/logger.service';
 import { CreateTaskDto } from '../dto/create-task.dto';
-import { TaskDocument } from '../entity/task.entity';
+import { GetTasksFilterDto } from '../dto/get-tasks-filter.dto';
+import { TaskDocument, TaskPriority } from '../entity/task.entity';
+import { IProjectService } from '../../project/service/project.service';
 
 export interface ITaskService {
   createTask(dto: CreateTaskDto, reporterId: string): Promise<TaskDocument>;
+  getAllTasks(managerId: string): Promise<TaskDocument[]>;
   getTasksByProject(projectId: string): Promise<TaskDocument[]>;
   getTaskById(id: string): Promise<TaskDocument | null>;
+  getTasksWithFilters(filters: GetTasksFilterDto): Promise<TaskDocument[]>;
 }
 
 @injectable()
 export class TaskService implements ITaskService {
   constructor(
     @inject(TYPES.TaskRepository) private taskRepository: ITaskRepository,
+    @inject(TYPES.ProjectService) private projectService: IProjectService,
     @inject(TYPES.SocketService) private socketService: ISocketService,
     @inject(TYPES.LoggerService) private logger: ILoggerService
-  ) {}
+  ) { }
 
   async createTask(dto: CreateTaskDto, reporterId: string): Promise<TaskDocument> {
-    // Generate next key sequence (normally we'd query project details, using mock "CF" prefix here)
     const projectKey = 'CF';
     const key = await this.taskRepository.getNextTaskKey(dto.projectId, projectKey);
 
-    // Get current max position to place new task at the end (mocking with simple date position)
     const position = Date.now();
 
     const savedTask = await this.taskRepository.create({
-      ...dto,
+      projectId: dto.projectId,
+      title: dto.title,
+      description: dto.description ?? undefined,
       key,
+      taskType: dto.taskType,
+      statusId: dto.statusId,
+      priority: dto.priority ?? TaskPriority.MEDIUM,
+      assigneeId: dto.assigneeId,
       reporterId,
-      position,
+      parentTaskId: dto.parentTaskId ?? undefined,
+      storyPoints: dto.storyPoints ?? undefined,
+      timeEstimateHours: dto.timeEstimateHours ?? undefined,
+      timeSpentHours: 0,
       dueDate: dto.dueDate ? new Date(dto.dueDate) : undefined,
+      position,
+      metadata: dto.metadata ?? {},
     });
 
     this.logger.info(`Task created successfully: ${savedTask.key} - ${savedTask.title}`);
 
-    // Broadcast update via Socket.IO to Project Room
     this.socketService.emitToRoom(`project:${savedTask.projectId}`, 'task:created', {
       task: savedTask,
     });
 
     return savedTask;
+  }
+
+  async getAllTasks(managerId: string): Promise<TaskDocument[]> {
+    const projects = await this.projectService.getProjectsByManager(managerId);
+    const projectIds = projects.map((project) => project._id.toString());
+
+    if (projectIds.length === 0) {
+      return [];
+    }
+
+    return await this.taskRepository.findByProjectIds(projectIds);
   }
 
   async getTasksByProject(projectId: string): Promise<TaskDocument[]> {
@@ -53,4 +77,11 @@ export class TaskService implements ITaskService {
   async getTaskById(id: string): Promise<TaskDocument | null> {
     return await this.taskRepository.findById(id);
   }
+
+  async getTasksWithFilters(filters: GetTasksFilterDto): Promise<TaskDocument[]> {
+    this.logger.info('Fetching tasks with filters', { filters });
+    const tasks = await this.taskRepository.findWithFilters(filters);
+    return tasks;
+  }
 }
+

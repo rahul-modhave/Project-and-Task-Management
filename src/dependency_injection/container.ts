@@ -25,11 +25,13 @@ import { ProjectMemberRepository } from '../modules/project/repository/project-m
 import { IAuthService, AuthService } from '../modules/auth/service/auth.service';
 import { ITaskService, TaskService } from '../modules/task/service/task.service';
 import { IProjectService, ProjectService } from '../modules/project/service/project.service';
+import { IDashboardService, DashboardService } from '../modules/dashboard/service/dashboard.service';
 
 // Import Controllers
 import { AuthController } from '../modules/auth/controller/auth.controller';
 import { TaskController } from '../modules/task/controller/task.controller';
 import { ProjectController } from '../modules/project/controller/project.controller';
+import { DashboardController } from '../modules/dashboard/controller/dashboard.controller';
 
 // Import Health Module
 import { IHealthService, HealthService } from '../modules/health/service/health.service';
@@ -62,12 +64,14 @@ container.bind<IUserEntityRepository>(TYPES.UserEntityRepository).to(UserEntityR
 container.bind<IAuthService>(TYPES.AuthService).to(AuthService);
 container.bind<ITaskService>(TYPES.TaskService).to(TaskService);
 container.bind<IProjectService>(TYPES.ProjectService).to(ProjectService);
+container.bind<IDashboardService>(TYPES.DashboardService).to(DashboardService);
 container.bind<IUserService>(TYPES.UserService).to(UserService);
 
 // Bind Controllers
 container.bind<AuthController>(TYPES.AuthController).to(AuthController);
 container.bind<TaskController>(TYPES.TaskController).to(TaskController);
 container.bind<ProjectController>(TYPES.ProjectController).to(ProjectController);
+container.bind<DashboardController>(TYPES.DashboardController).to(DashboardController);
 container.bind<UserController>(TYPES.UserController).to(UserController);
 
 // Bind Health Module
