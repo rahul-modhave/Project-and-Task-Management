@@ -22,7 +22,7 @@ router.post('/getTasks', authMiddleware, validationMiddleware(GetTasksFilterDto)
 });
 
 router.get('/getTasks', authMiddleware, (req, res, next) => {
-  getController().getAllTasks(req, res, next);
+  getController().getAllTasksWithProjects(req, res, next);
 });
 
 router.get('/', authMiddleware, (req, res, next) => {

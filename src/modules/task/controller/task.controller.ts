@@ -45,6 +45,25 @@ export class TaskController extends BaseController {
     }
   };
 
+  public getAllTasksWithProjects = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const user = (req as any).user;
+      if (!user) {
+        throw AppError.unauthorized('User not authenticated');
+      }
+
+      const { tasks, projects } = await this.taskService.getTasksWithProjects(user.id);
+      res.status(200).json({
+        success: true,
+        message: 'Tasks for manager projects retrieved successfully',
+        projects,
+        data: tasks,
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
+
   public getTasksByProject = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const { projectId } = req.params;

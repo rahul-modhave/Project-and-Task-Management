@@ -14,6 +14,7 @@ export interface ITaskService {
   getTasksByProject(projectId: string): Promise<TaskDocument[]>;
   getTaskById(id: string): Promise<TaskDocument | null>;
   getTasksWithFilters(filters: GetTasksFilterDto): Promise<TaskDocument[]>;
+  getTasksWithProjects(managerId: string): Promise<{ tasks: TaskDocument[]; projects: { _id: string; name: string }[] }>;
 }
 
 @injectable()
@@ -68,6 +69,21 @@ export class TaskService implements ITaskService {
     }
 
     return await this.taskRepository.findByProjectIds(projectIds);
+  }
+
+  async getTasksWithProjects(managerId: string): Promise<{ tasks: TaskDocument[]; projects: { _id: string; name: string }[] }> {
+    const projects = await this.projectService.getProjectsByManager(managerId);
+    const tasks = await this.getAllTasks(managerId);
+
+    const projectSummaries = projects.map((project) => ({
+      _id: project._id.toString(),
+      name: project.name,
+    }));
+
+    return {
+      tasks,
+      projects: projectSummaries,
+    };
   }
 
   async getTasksByProject(projectId: string): Promise<TaskDocument[]> {
