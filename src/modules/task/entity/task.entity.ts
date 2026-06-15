@@ -22,7 +22,6 @@ export interface ITask {
   parentTaskId?: string;
   title: string;
   description?: string;
-  key: string;
   taskType: TaskType;
   statusId: string;
   priority: TaskPriority;
@@ -48,7 +47,6 @@ const TaskSchema = new Schema<TaskDocument>(
     parentTaskId: { type: String, default: null },
     title: { type: String, required: true },
     description: { type: String, default: null },
-    key: { type: String, required: true, unique: true },
     taskType: { type: String, enum: Object.values(TaskType), default: TaskType.TASK },
     statusId: { type: String, required: true },
     priority: { type: String, enum: Object.values(TaskPriority), default: TaskPriority.MEDIUM },

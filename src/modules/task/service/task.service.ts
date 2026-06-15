@@ -27,16 +27,12 @@ export class TaskService implements ITaskService {
   ) { }
 
   async createTask(dto: CreateTaskDto, reporterId: string): Promise<TaskDocument> {
-    const projectKey = 'CF';
-    const key = await this.taskRepository.getNextTaskKey(dto.projectId, projectKey);
-
     const position = Date.now();
 
     const savedTask = await this.taskRepository.create({
       projectId: dto.projectId,
       title: dto.title,
       description: dto.description ?? undefined,
-      key,
       taskType: dto.taskType,
       statusId: dto.statusId,
       priority: dto.priority ?? TaskPriority.MEDIUM,
@@ -51,7 +47,7 @@ export class TaskService implements ITaskService {
       metadata: dto.metadata ?? {},
     });
 
-    this.logger.info(`Task created successfully: ${savedTask.key} - ${savedTask.title}`);
+    this.logger.info(`Task created successfully: ${savedTask._id.toString()} - ${savedTask.title}`);
 
     this.socketService.emitToRoom(`project:${savedTask.projectId}`, 'task:created', {
       task: savedTask,

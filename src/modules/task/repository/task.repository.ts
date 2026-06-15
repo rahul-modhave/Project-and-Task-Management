@@ -22,11 +22,6 @@ export class TaskRepository extends BaseRepository<TaskDocument> implements ITas
     return await this.findAll({ assigneeId, deletedAt: null });
   }
 
-  async getNextTaskKey(projectId: string, projectKey: string): Promise<string> {
-    const count = await Task.countDocuments({ projectId, deletedAt: null });
-    return `${projectKey.toUpperCase()}-${count + 1}`;
-  }
-
   async findWithFilters(filters: GetTasksFilterDto): Promise<TaskDocument[]> {
     const query: any = { deletedAt: null };
 
