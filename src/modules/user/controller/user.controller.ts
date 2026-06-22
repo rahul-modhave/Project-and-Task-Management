@@ -25,6 +25,7 @@ export class UserController extends BaseController {
                 email: user.email,
                 firstName: user.firstName,
                 lastName: user.lastName,
+                userRole: user.userRole,
                 avatar: user.avatar,
                 isVerified: user.isVerified,
                 lastLoginAt: user.lastLoginAt,
@@ -33,6 +34,15 @@ export class UserController extends BaseController {
             };
 
             this.sendSuccess(res, userResponse, 'User created successfully', 201);
+        } catch (err) {
+            next(err);
+        }
+    };
+
+    public getAllUsers = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const users = await this.userService.getAllUsers();
+            this.sendSuccess(res, users, 'Users retrieved successfully');
         } catch (err) {
             next(err);
         }

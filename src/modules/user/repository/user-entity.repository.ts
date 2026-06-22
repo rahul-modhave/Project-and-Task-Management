@@ -15,16 +15,21 @@ export class UserEntityRepository extends BaseRepository<UserEntityDocument> imp
     }
 
     async ensureCollectionExists(): Promise<void> {
+
         // Check if collection exists
-        const collections = await mongoose.connection.db.listCollections({ name: 'users' }).toArray();
+        const collections = await mongoose.connection.db!.listCollections({ name: 'users' }).toArray();
 
         if (collections.length === 0) {
             // Collection doesn't exist, create it by inserting and removing a dummy document
             // This ensures indexes are created
-            await mongoose.connection.db.createCollection('users');
+            await mongoose.connection.db!.createCollection('users');
             console.log('Created "users" collection');
         } else {
             console.log('"users" collection already exists');
         }
+    }
+
+    async getAllUsers(): Promise<UserEntityDocument[]> {
+        return await this.findAll({ deletedAt: null });
     }
 }

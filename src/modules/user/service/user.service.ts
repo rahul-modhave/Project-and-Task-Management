@@ -9,6 +9,7 @@ import { AppError } from '../../../common/errors/app-error';
 
 export interface IUserService {
     createUser(dto: CreateUserDto): Promise<UserEntityDocument>;
+    getAllUsers(): Promise<UserEntityDocument[]>;
 }
 
 @injectable()
@@ -20,8 +21,8 @@ export class UserService implements IUserService {
 
     async createUser(dto: CreateUserDto): Promise<UserEntityDocument> {
         try {
-            // Ensure the users collection exists
-            await this.userRepository.ensureCollectionExists();
+            // // Ensure the users collection exists
+            // await this.userRepository.ensureCollectionExists();
 
             // Check if user with this email already exists
             const existingUser = await this.userRepository.findByEmail(dto.email);
@@ -39,9 +40,9 @@ export class UserService implements IUserService {
                 passwordHash,
                 firstName: dto.firstName,
                 lastName: dto.lastName,
-                avatar: dto.avatar || null,
+                avatar: dto.avatar || "",
                 isVerified: dto.isVerified || false,
-                lastLoginAt: null,
+                lastLoginAt: undefined,
             });
 
             this.logger.info(`User created successfully: ${newUser.email}`);
@@ -53,6 +54,16 @@ export class UserService implements IUserService {
             }
             this.logger.error('Error creating user', error);
             throw AppError.internal('Failed to create user', 'USER_CREATION_FAILED');
+        }
+    }
+
+    async getAllUsers(): Promise<UserEntityDocument[]> {
+        try {
+            return await this.userRepository.getAllUsers();
+
+        } catch (error) {
+            this.logger.error('Error fetching users', error);
+            throw AppError.internal('Failed to fetch users', 'USER_FETCH_FAILED');
         }
     }
 }

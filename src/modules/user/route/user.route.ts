@@ -16,4 +16,9 @@ router.post('/', validationMiddleware(CreateUserDto), (req, res, next) => {
     getController().createUser(req, res, next);
 });
 
+router.get('/getAllUsers', (req, res, next) => {
+    getController().getAllUsers(req, res, next);
+});
+
+
 export default router;

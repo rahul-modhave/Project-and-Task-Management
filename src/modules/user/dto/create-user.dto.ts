@@ -19,6 +19,10 @@ export class CreateUserDto {
     lastName: string;
 
     @IsOptional()
+    @IsString({ message: 'User role must be a string' })
+    userRole?: string;
+
+    @IsOptional()
     @IsString({ message: 'Avatar must be a string' })
     avatar?: string;
 

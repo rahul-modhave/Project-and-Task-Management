@@ -7,6 +7,16 @@ export enum ProjectStatus {
   ARCHIVED = 'archived',
 }
 
+export enum ProjectMemberRole {
+  TEAM_LEAD = 'team_lead',
+  DEVELOPER = 'developer',
+}
+
+export interface IProjectMember {
+  userId: Types.ObjectId;
+  userRole: ProjectMemberRole;
+}
+
 export interface IProject {
   _id: Types.ObjectId;
   workspaceId: Types.ObjectId;
@@ -18,12 +28,30 @@ export interface IProject {
   endDate?: Date;
   createdBy: Types.ObjectId;
   projectManager: Types.ObjectId;
-  members: Types.ObjectId[];
+  members: IProjectMember[];
   deletedAt?: Date;
   version: number;
   createdAt: Date;
   updatedAt: Date;
 }
+
+const ProjectMemberSchema = new Schema<IProjectMember>(
+  {
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+    userRole: {
+      type: String,
+      enum: Object.values(ProjectMemberRole),
+      required: true,
+    },
+  },
+  {
+    _id: false,
+  }
+);
 
 export type ProjectDocument = IProject & Document;
 
@@ -38,7 +66,7 @@ const ProjectSchema = new Schema<ProjectDocument>(
     endDate: { type: Date, default: null },
     createdBy: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
     projectManager: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
-    members: { type: [Schema.Types.ObjectId], ref: 'User', default: [] },
+    members: { type: [ProjectMemberSchema], default: [], },
     deletedAt: { type: Date, default: null },
     version: { type: Number, default: 1 },
   },

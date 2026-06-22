@@ -1,11 +1,18 @@
 import { Schema, model, Document, Types } from 'mongoose';
 
+export enum UserRole {
+    ADMIN = 'admin',
+    MANAGER = 'manager',
+    DEVELOPER = 'developer',
+}
+
 export interface IUserEntity {
     _id: Types.ObjectId;
     email: string;
     passwordHash: string;
     firstName: string;
     lastName: string;
+    userRole: UserRole;
     avatar?: string;
     isVerified: boolean;
     lastLoginAt?: Date;
@@ -38,6 +45,7 @@ const UserEntitySchema = new Schema<UserEntityDocument>(
             required: true,
             trim: true
         },
+        userRole: { type: String, enum: Object.values(UserRole), default: UserRole.DEVELOPER },
         avatar: {
             type: String,
             default: null
